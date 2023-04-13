@@ -9,11 +9,11 @@ app.use(require("cookie-parser")());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const test = require("../src/routes/index");
+const indexRouter = require("../src/routes/index");
 
 connectMongoDB();
 
-app.use("/test", test);
+app.use("/api", indexRouter);
 
 app.use(function (req, res, next) {
   const err = new Error("404 Not Found");
