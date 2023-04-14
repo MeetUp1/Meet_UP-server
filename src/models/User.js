@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  openTine: {
+  openTime: {
     type: Array,
   },
 });
