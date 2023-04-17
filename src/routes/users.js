@@ -7,5 +7,11 @@ router.patch("/:id", userController.patchOpenTime);
 router.patch("/:id/changeTime", userController.patchChangeTime);
 router.get("/:id", userController.getOpenTime);
 router.get("/", userController.getUsers);
+router.get("/:id/meetings", userController.getMeetings);
+router.patch("/:userId/cancel", userController.patchCancelTime);
+router.patch(
+  "/:id/changeReservationTime",
+  userController.patchCancelReservationTime,
+);
 
 module.exports = router;

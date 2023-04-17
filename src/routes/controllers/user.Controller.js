@@ -1,3 +1,4 @@
+const Meeting = require("../../models/Meeting");
 const User = require("../../models/User");
 
 exports.loginUser = async (req, res, next) => {
@@ -31,6 +32,7 @@ exports.patchOpenTime = async (req, res, next) => {
     if (!user) {
       return res.status(404).send("User not found");
     }
+
     user.openTime = req.body.selectedDateTime;
     await user.save();
   } catch (err) {
@@ -42,9 +44,11 @@ exports.getOpenTime = async (req, res, next) => {
   try {
     const id = req.params.id;
     const user = await User.findOne({ id });
+
     if (!user) {
       return res.status(404).send("User not found");
     }
+
     res.send(user);
   } catch (err) {
     next(err);
@@ -54,9 +58,11 @@ exports.getOpenTime = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find();
+
     if (!users) {
       return res.status(404).send("users not found");
     }
+
     res.send(users);
   } catch (err) {
     next(err);
@@ -65,13 +71,14 @@ exports.getUsers = async (req, res, next) => {
 
 exports.patchChangeTime = async (req, res, next) => {
   try {
-    const id = req.params.id;
+    const { id } = req.params;
     const user = await User.findOne({ id });
     const selectTime = req.body.selectUserUTCTime;
-
+    console.log(selectTime);
     if (!user) {
       return res.status(404).send("User not found");
     }
+
     const userOpenTime = user.openTime;
     const newOpenTime = userOpenTime.filter(
       (userOpenTime) => userOpenTime !== selectTime,
@@ -80,6 +87,73 @@ exports.patchChangeTime = async (req, res, next) => {
     user.openTime = newOpenTime;
     user.reservationTime = [...user.reservationTime, selectTime];
     await user.save();
+
+    res.status(200).json({ message: "Time updated successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getMeetings = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const meetings = await Meeting.find({
+      $or: [{ "requestee.id": id }, { "requester.id": id }],
+    });
+    if (!meetings) {
+      return res.status(404).send("User not found");
+    }
+
+    res.send(meetings);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.patchCancelReservationTime = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const user = await User.findOne({ id });
+    const { time } = req.body;
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    const reservationTime = user.reservationTime;
+    const newReservationTime = reservationTime.filter(
+      (userOpenTime) => userOpenTime !== time,
+    );
+
+    user.reservationTime = newReservationTime;
+    await user.save();
+    res.status(200).json({ message: "Time updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.patchCancelTime = async (req, res, next) => {
+  try {
+    const id = req.params.userId;
+    const user = await User.findOne({ id });
+    const { time } = req.body;
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    const userOpenTime = user.openTime;
+    const reservationTime = user.reservationTime;
+    const newReservationTime = reservationTime.filter(
+      (userOpenTime) => userOpenTime !== time,
+    );
+
+    user.openTime = [...userOpenTime, time];
+    user.reservationTime = newReservationTime;
+
+    await user.save();
+    res.status(200).json({ message: "Time updated successfully" });
   } catch (err) {
     next(err);
   }
