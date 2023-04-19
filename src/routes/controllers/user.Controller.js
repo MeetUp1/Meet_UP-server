@@ -110,6 +110,29 @@ exports.getMeetings = async (req, res, next) => {
   }
 };
 
+exports.getAcceptedMeetings = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const meetings = await Meeting.find({
+      $and: [
+        {
+          $or: [{ "requestee.id": id }, { "requester.id": id }],
+        },
+        {
+          status: "accepted",
+        },
+      ],
+    });
+    if (!meetings) {
+      return res.status(404).send("User not found");
+    }
+
+    res.send(meetings);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.patchCancelReservationTime = async (req, res, next) => {
   try {
     const { id } = req.params;
