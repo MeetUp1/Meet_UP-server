@@ -105,7 +105,10 @@ exports.getMeetings = async (req, res, next) => {
     if (!meetings) {
       return res.status(404).send("User not found");
     }
-
+    meetings.sort((a, b) => {
+      return new Date(a.startTime) - new Date(b.startTime);
+    });
+    console.log(meetings);
     res.send(meetings);
   } catch (err) {
     next(err);
@@ -128,6 +131,9 @@ exports.getAcceptedMeetings = async (req, res, next) => {
     if (!meetings) {
       return res.status(404).send("User not found");
     }
+    meetings.sort((a, b) => {
+      return new Date(a.startTime) - new Date(b.startTime);
+    });
 
     res.send(meetings);
   } catch (err) {
@@ -189,6 +195,7 @@ exports.patchCheckTime = async (req, res, next) => {
     const user = await User.findOne({ id });
     console.log(id);
     const now = new Date();
+    now.setHours(now.getHours() - 1);
 
     if (!user) {
       return res.status(404).send("User not found");
