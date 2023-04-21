@@ -10,6 +10,7 @@ router.get("/", userController.getUsers);
 router.get("/:id/meetings", userController.getMeetings);
 router.get("/:id/meetings/accepted", userController.getAcceptedMeetings);
 router.patch("/:userId/cancel", userController.patchCancelTime);
+router.patch("/:id/checkTime", userController.patchCheckTime);
 router.patch(
   "/:id/changeReservationTime",
   userController.patchCancelReservationTime,

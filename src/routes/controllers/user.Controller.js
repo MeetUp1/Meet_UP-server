@@ -19,6 +19,8 @@ exports.loginUser = async (req, res, next) => {
         email,
       });
     }
+
+    res.status(200).json({ message: "User updated successfully" });
   } catch (err) {
     next(err);
   }
@@ -74,7 +76,7 @@ exports.patchChangeTime = async (req, res, next) => {
     const { id } = req.params;
     const user = await User.findOne({ id });
     const selectTime = req.body.selectUserUTCTime;
-    console.log(selectTime);
+
     if (!user) {
       return res.status(404).send("User not found");
     }
@@ -136,7 +138,6 @@ exports.getAcceptedMeetings = async (req, res, next) => {
 exports.patchCancelReservationTime = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(id);
     const user = await User.findOne({ id });
     const { time } = req.body;
 
@@ -176,6 +177,33 @@ exports.patchCancelTime = async (req, res, next) => {
     user.reservationTime = newReservationTime;
 
     await user.save();
+    res.status(200).json({ message: "Time updated successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.patchCheckTime = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findOne({ id });
+    console.log(id);
+    const now = new Date();
+
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+
+    if (user.openTime.length !== 0) {
+      const filteredTimes = user.openTime
+        .map((time) => new Date(time))
+        .filter((meetingTime) => meetingTime > now)
+        .map((meetingTime) => meetingTime.toISOString());
+      console.log(filteredTimes);
+      user.openTime = filteredTimes;
+      await user.save();
+    }
+
     res.status(200).json({ message: "Time updated successfully" });
   } catch (err) {
     next(err);
