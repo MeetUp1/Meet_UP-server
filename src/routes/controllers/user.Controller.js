@@ -3,6 +3,7 @@ const User = require("../../models/User");
 
 exports.loginUser = async (req, res, next) => {
   const { id, name, picture, email } = req.body.user;
+  const { expoPushToken } = req.body;
 
   if (!id || !name || !picture || !email) {
     return res.status(401).send({ message: "Invalid user" });
@@ -12,11 +13,12 @@ exports.loginUser = async (req, res, next) => {
     const user = await User.findOne({ id });
 
     if (!user) {
-      user = await User.create({
+      await User.create({
         name,
         id,
         picture,
         email,
+        expoPushToken,
       });
     }
 
@@ -193,7 +195,7 @@ exports.patchCheckTime = async (req, res, next) => {
   try {
     const { id } = req.params;
     const user = await User.findOne({ id });
-    console.log(id);
+
     const now = new Date();
     now.setHours(now.getHours() - 1);
 

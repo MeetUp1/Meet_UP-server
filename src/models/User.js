@@ -26,6 +26,9 @@ const UserSchema = new mongoose.Schema({
   reservationTime: {
     type: Array,
   },
+  expoPushToken: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("User", UserSchema);
