@@ -110,7 +110,7 @@ exports.getMeetings = async (req, res, next) => {
     meetings.sort((a, b) => {
       return new Date(a.startTime) - new Date(b.startTime);
     });
-    console.log(meetings);
+
     res.send(meetings);
   } catch (err) {
     next(err);
@@ -208,7 +208,7 @@ exports.patchCheckTime = async (req, res, next) => {
         .map((time) => new Date(time))
         .filter((meetingTime) => meetingTime > now)
         .map((meetingTime) => meetingTime.toISOString());
-      console.log(filteredTimes);
+
       user.openTime = filteredTimes;
       await user.save();
     }
