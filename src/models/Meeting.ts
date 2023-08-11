@@ -1,6 +1,16 @@
-const mongoose = require("mongoose");
+import mongoose, { Document, Schema } from "mongoose";
 
-const MeetingSchema = new mongoose.Schema({
+interface IMeeting extends Document {
+  title: string;
+  location: string;
+  startTime: string;
+  status: string;
+  requester: object;
+  requestee: object;
+  message?: string;
+}
+
+const MeetingSchema = new Schema<IMeeting>({
   title: {
     type: String,
     required: true,
@@ -31,4 +41,4 @@ const MeetingSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Meeting", MeetingSchema);
+export default mongoose.model<IMeeting>("Meeting", MeetingSchema);

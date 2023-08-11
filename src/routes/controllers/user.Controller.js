@@ -62,7 +62,6 @@ exports.getOpenTime = async (req, res, next) => {
 exports.getUsers = async (req, res, next) => {
   try {
     const users = await User.find();
-
     if (!users) {
       return res.status(404).send("users not found");
     }
