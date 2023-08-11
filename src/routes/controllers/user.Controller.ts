@@ -1,7 +1,12 @@
-const Meeting = require("../../models/Meeting");
-const User = require("../../models/User");
+import { Request, Response, NextFunction } from "express";
+import Meeting from "../../models/Meeting";
+import User from "../../models/User";
 
-exports.loginUser = async (req, res, next) => {
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { id, name, picture, email } = req.body.user;
   const { expoPushToken } = req.body;
 
@@ -28,7 +33,11 @@ exports.loginUser = async (req, res, next) => {
   }
 };
 
-exports.patchOpenTime = async (req, res, next) => {
+export const patchOpenTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = req.params.id;
     const user = await User.findOne({ id });
@@ -44,7 +53,11 @@ exports.patchOpenTime = async (req, res, next) => {
   }
 };
 
-exports.getOpenTime = async (req, res, next) => {
+export const getOpenTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = req.params.id;
     const user = await User.findOne({ id });
@@ -59,7 +72,11 @@ exports.getOpenTime = async (req, res, next) => {
   }
 };
 
-exports.getUsers = async (req, res, next) => {
+export const getUsers = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const users = await User.find();
     if (!users) {
@@ -72,13 +89,17 @@ exports.getUsers = async (req, res, next) => {
   }
 };
 
-exports.patchChangeTime = async (req, res, next) => {
+export const patchChangeTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const user = await User.findOne({ id });
     const selectTime = req.body.selectUserUTCTime;
 
-    if (!user) {
+    if (!user || !user.openTime || !user.reservationTime) {
       return res.status(404).send("User not found");
     }
 
@@ -97,7 +118,11 @@ exports.patchChangeTime = async (req, res, next) => {
   }
 };
 
-exports.getMeetings = async (req, res, next) => {
+export const getMeetings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const meetings = await Meeting.find({
@@ -107,7 +132,7 @@ exports.getMeetings = async (req, res, next) => {
       return res.status(404).send("User not found");
     }
     meetings.sort((a, b) => {
-      return new Date(a.startTime) - new Date(b.startTime);
+      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
     });
 
     res.send(meetings);
@@ -116,7 +141,11 @@ exports.getMeetings = async (req, res, next) => {
   }
 };
 
-exports.getAcceptedMeetings = async (req, res, next) => {
+export const getAcceptedMeetings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const meetings = await Meeting.find({
@@ -133,7 +162,7 @@ exports.getAcceptedMeetings = async (req, res, next) => {
       return res.status(404).send("User not found");
     }
     meetings.sort((a, b) => {
-      return new Date(a.startTime) - new Date(b.startTime);
+      return new Date(a.startTime).getTime() - new Date(b.startTime).getTime();
     });
 
     res.send(meetings);
@@ -142,13 +171,17 @@ exports.getAcceptedMeetings = async (req, res, next) => {
   }
 };
 
-exports.patchCancelReservationTime = async (req, res, next) => {
+export const patchCancelReservationTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const user = await User.findOne({ id });
     const { time } = req.body;
 
-    if (!user) {
+    if (!user || !user.reservationTime) {
       return res.status(404).send("User not found");
     }
     const reservationTime = user.reservationTime;
@@ -164,13 +197,17 @@ exports.patchCancelReservationTime = async (req, res, next) => {
   }
 };
 
-exports.patchCancelTime = async (req, res, next) => {
+export const patchCancelTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const id = req.params.userId;
     const user = await User.findOne({ id });
     const { time } = req.body;
 
-    if (!user) {
+    if (!user || !user.reservationTime || !user.openTime) {
       return res.status(404).send("User not found");
     }
 
@@ -190,7 +227,11 @@ exports.patchCancelTime = async (req, res, next) => {
   }
 };
 
-exports.patchCheckTime = async (req, res, next) => {
+export const patchCheckTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const user = await User.findOne({ id });
@@ -198,7 +239,7 @@ exports.patchCheckTime = async (req, res, next) => {
     const now = new Date();
     now.setHours(now.getHours() - 1);
 
-    if (!user) {
+    if (!user || !user.openTime) {
       return res.status(404).send("User not found");
     }
 

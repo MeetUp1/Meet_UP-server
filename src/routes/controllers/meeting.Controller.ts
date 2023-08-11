@@ -1,13 +1,18 @@
-const Meeting = require("../../models/Meeting");
+import { Request, Response, NextFunction } from "express";
+import Meeting from "../../models/Meeting";
 
-exports.meeting = async (req, res, next) => {
+export const meeting = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { title, location, startTime, requester, requestee } = req.body;
   if (!title || !location || !startTime || !requester || !requestee) {
     return res.status(401).send({ message: "Invalid user" });
   }
 
   try {
-    user = await Meeting.create({
+    await Meeting.create({
       title,
       location,
       startTime,
@@ -21,7 +26,11 @@ exports.meeting = async (req, res, next) => {
   }
 };
 
-exports.patchChangeTime = async (req, res, next) => {
+export const patchChangeTime = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { id } = req.params;
     const meeting = await Meeting.findOne({ _id: id });
@@ -38,7 +47,11 @@ exports.patchChangeTime = async (req, res, next) => {
   }
 };
 
-exports.deleteMeeting = async (req, res, next) => {
+export const deleteMeeting = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { meetingId } = req.params;
 
@@ -50,7 +63,11 @@ exports.deleteMeeting = async (req, res, next) => {
   }
 };
 
-exports.patchReject = async (req, res, next) => {
+export const patchReject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { meetingId } = req.params;
     const { message } = req.body;

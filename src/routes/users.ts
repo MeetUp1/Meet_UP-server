@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import * as userController from "./controllers/user.Controller";
+
 const router = express.Router();
-const userController = require("./controllers/user.Controller");
 
 router.post("/login", userController.loginUser);
 router.patch("/:id", userController.patchOpenTime);
@@ -16,4 +17,4 @@ router.patch(
   userController.patchCancelReservationTime,
 );
 
-module.exports = router;
+export default router;

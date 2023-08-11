@@ -7,7 +7,8 @@
     "start": "node ./dist/bin/www",
     "prepare": "husky install",
     "dev": "nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/bin/www",
-    "pre-commit": "lint-staged"
+    "pre-commit": "lint-staged",
+    "postbuild": "mkdir -p ./dist/bin && cp ./src/bin/www ./dist/bin/www"
   },
   "dependencies": {
     "axios": "^1.3.4",
@@ -22,7 +23,10 @@
     "morgan": "~1.9.1"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.3",
+    "@types/debug": "^4.1.8",
     "@types/express": "^4.17.17",
+    "@types/morgan": "^1.9.4",
     "@types/node": "^20.4.9",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.3.0",
